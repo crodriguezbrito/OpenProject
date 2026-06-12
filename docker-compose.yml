@@ -1,0 +1,58 @@
+networks:
+  openproject_net:
+    driver: bridge
+
+services:
+  # --- SERVICIO OPENLDAP ---
+  openldap:
+    image: osixia/openldap:latest
+    container_name: openldap_local
+    networks:
+      - openproject_net
+    ports:
+      - "389:389"
+      - "636:636"
+    environment:
+      - LDAP_ORGANIZATION=Mi Empresa
+      - LDAP_DOMAIN=ejemplo.local
+      - LDAP_ADMIN_PASSWORD=adminpassword
+      - LDAP_TLS=false # Desactivado para pruebas locales simples
+    volumes:
+      - ldap_data:/var/lib/ldap
+      - ldap_config:/etc/ldap/slapd.d
+
+  # --- INTERFAZ WEB PARA GESTIONAR LDAP (Opcional pero muy útil) ---
+  phpldapadmin:
+    image: osixia/phpldapadmin:latest
+    container_name: phpldapadmin_local
+    networks:
+      - openproject_net
+    ports:
+      - "8080:80"
+    environment:
+      - PHPLDAPADMIN_LDAP_HOSTS=openldap
+      - PHPLDAPADMIN_HTTPS=false
+    depends_on:
+      - openldap
+
+  # --- SERVICIO OPENPROJECT ---
+  openproject:
+    image: openproject/openproject:14
+    container_name: openproject_local
+    networks:
+      - openproject_net
+    ports:
+      - "8000:80"
+    environment:
+      - OPENPROJECT_SECRET_KEY_BASE=unasecretkeymuylargaysegura1234567890
+      - OPENPROJECT_HOST__NAME=localhost:8000
+      - OPENPROJECT_HTTPS=false
+    volumes:
+      - openproject_data:/var/openproject/assets
+    depends_on:
+      - openldap
+
+volumes:
+  ldap_data:
+  ldap_config:
+  openproject_data:
