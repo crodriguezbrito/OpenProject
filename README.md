@@ -1,8 +1,5 @@
-# OpenProject
-POC de conexión entre OpenLdap y OpenProject para permitir loguear usuarios usando LDAP
-
 # Laboratorio de Integración: OpenLDAP + OpenProject en Docker
-
+POC de conexión entre OpenLdap y OpenProject para permitir loguear usuarios usando LDAP.
 Este repositorio contiene la configuración necesaria para desplegar un entorno local de pruebas con autenticación centralizada. El laboratorio incluye un servidor OpenLDAP, la interfaz de administración web phpLDAPadmin y la plataforma de gestión de proyectos OpenProject operando conjuntamente dentro de una red aislada de Docker.
 
 ## Requisitos Previos
